@@ -1,6 +1,8 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { Link } from "react-router-dom";
-import LoginPage from "./LoginPage";
+import { auth, db } from "../services/firebaseConfig";
+import { addDoc, collection } from "firebase/firestore";
+import { createUserWithEmailAndPassword } from "firebase/auth";
 
 const SignupPage = () => {
   const [customerName, setCustomerName] = useState("");
@@ -8,7 +10,7 @@ const SignupPage = () => {
   const [customerPassword, setCustomerPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
-  const registerUser = async () => {
+  const registerUser = async (e) => {
     e.preventDefault();
     if (!customerName || !customerPassword || !customerEmail) {
       alert("All the fields are required!");
@@ -19,8 +21,8 @@ const SignupPage = () => {
     try {
       const userCredentials = await createUserWithEmailAndPassword(
         auth,
-        email,
-        password
+        customerEmail,
+        customerPassword
       );
 
       const user = userCredentials.user;
@@ -29,7 +31,7 @@ const SignupPage = () => {
       const customersRef = collection(db, "customerData");
       await addDoc(customersRef, {
         name: customerName,
-        email: email,
+        email: customerEmail,
         uid: user.uid,
       });
       // Clear the form after successful submission

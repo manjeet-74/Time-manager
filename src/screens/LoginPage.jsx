@@ -1,13 +1,4 @@
-import React, { useEffect, useState } from "react";
-import {
-  collection,
-  addDoc,
-  onSnapshot,
-  doc,
-  updateDoc,
-  deleteDoc,
-} from "firebase/firestore";
-import db from "../services/firebaseConfig.js";
+import { useState } from "react";
 import { Link } from "react-router-dom";
 
 const LoginPage = () => {
@@ -21,14 +12,15 @@ const LoginPage = () => {
         alert("Both fields are required!");
         return;
       }
-      //check if the user exist in firebase database or not in collection "customerData"
+
+      // You would likely add logic to check if the user exists in the database here.
 
       // Clear the form after successful submission
       setCustomerName("");
       setCustomerPassword("");
       alert("Customer data added successfully!");
     } catch (error) {
-      console.error("Error adding customer data: ", error);
+      console.error("Error processing data: ", error);
       alert("Error saving data. Please try again.");
     }
   };
@@ -78,7 +70,7 @@ const LoginPage = () => {
 
         {/* Sign In Link */}
         <p className="mt-4 text-center text-sm text-gray-500">
-          Don't have an account?{" "}
+          Don&apos;t have an account?{" "}
           <Link to="/signup" className="text-blue-600 hover:underline">
             Signup
           </Link>

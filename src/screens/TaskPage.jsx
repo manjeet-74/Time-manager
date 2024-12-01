@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from "react";
-import db from "../services/firebaseConfig";
+import { useState, useEffect } from "react";
+import { db } from "../services/firebaseConfig";
 import {
   collection,
   addDoc,
@@ -17,16 +17,6 @@ const TaskPage = () => {
   // State for controlling the visibility of the sidebar
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
-  // Timer states
-  const [workedThisWeek, setWorkedThisWeek] = useState(14400); // Initial time in seconds (e.g., 4 hours)
-  const [isTimerRunning, setIsTimerRunning] = useState(false); // Tracks whether the timer is running
-
-  //Task and Project state
-  const [projects, setProjects] = useState([
-    { id: 1, name: "Project One", time: "00:30:00", isChecked: false },
-    { id: 2, name: "Project Two", time: "01:00:00", isChecked: false },
-    { id: 3, name: "Project Three", time: "00:45:00", isChecked: false },
-  ]);
   const [tasks, setTasks] = useState([]);
   const [showModal, setShowModal] = useState(false);
   const [task, setTask] = useState("");
@@ -36,6 +26,7 @@ const TaskPage = () => {
   const [currentPage, setCurrentPage] = useState(1); // Pagination: current page
   const [isLoading, setIsLoading] = useState(false);
   const tasksPerPage = 5; // Number of tasks per page
+
 
   // Filter tasks based on search input
   const filteredTasks = tasks.filter((task) =>
@@ -67,16 +58,6 @@ const TaskPage = () => {
     setIsSidebarOpen((prevState) => !prevState);
   };
 
-  // Function to format seconds into HH:MM:SS
-  const formatTime = (seconds) => {
-    const hrs = Math.floor(seconds / 3600);
-    const mins = Math.floor((seconds % 3600) / 60);
-    const secs = seconds % 60;
-    return `${hrs.toString().padStart(2, "0")}:${mins
-      .toString()
-      .padStart(2, "0")}:${secs.toString().padStart(2, "0")}`;
-  };
-
   // Handle checkbox toggle (strike-through)
   const toggleCompleted = (list, setList, id) => {
     setList((prevList) =>
@@ -102,6 +83,8 @@ const TaskPage = () => {
       setTask("");
       setShowModal(false); // Close the modal
     } catch (error) {
+      console.log("You got an erro!", error);
+
       alert("Please enter a task!");
     }
   };
