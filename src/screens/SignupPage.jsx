@@ -1,12 +1,56 @@
-import React from "react";
+import React, { useState } from "react";
+import { Link } from "react-router-dom";
+import LoginPage from "./LoginPage";
 
 const SignupPage = () => {
+  const [customerName, setCustomerName] = useState("");
+  const [customerEmail, setCustomerEmail] = useState("");
+  const [customerPassword, setCustomerPassword] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+
+  const registerUser = async () => {
+    e.preventDefault();
+    if (!customerName || !customerPassword || !customerEmail) {
+      alert("All the fields are required!");
+      return;
+    }
+    setIsLoading(true);
+
+    try {
+      const userCredentials = await createUserWithEmailAndPassword(
+        auth,
+        email,
+        password
+      );
+
+      const user = userCredentials.user;
+
+      // Add the customer data to Firestore
+      const customersRef = collection(db, "customerData");
+      await addDoc(customersRef, {
+        name: customerName,
+        email: email,
+        uid: user.uid,
+      });
+      // Clear the form after successful submission
+      setCustomerName("");
+      setCustomerPassword("");
+      setCustomerEmail("");
+      alert("Account created successfully!");
+    } catch (error) {
+      console.error("Error adding customer data: ", error);
+      alert("Error saving data. Please try again.");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   return (
     <div className="min-h-screen w-full flex items-center justify-center lg:justify-between bg-gray-50 lg:border-x-white">
       {/* Form Section */}
       <div className="w-full max-w-md bg-white shadow-md rounded-lg p-8 m-4 lg:m-16">
         <h1 className="text-3xl font-bold mb-6 text-center">Get Started Now</h1>
-        <form className="space-y-4">
+        <form className="space-y-4" onSubmit={registerUser}>
           {/* Name Input */}
           <div>
             <label className="block text-sm font-medium text-gray-700">
@@ -14,6 +58,8 @@ const SignupPage = () => {
             </label>
             <input
               type="text"
+              value={customerName}
+              onChange={(e) => setCustomerName(e.target.value)}
               placeholder="Enter your name"
               className="w-full border border-gray-300 rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-green-500"
             />
@@ -26,6 +72,8 @@ const SignupPage = () => {
             </label>
             <input
               type="email"
+              value={customerEmail}
+              onChange={(e) => setCustomerEmail(e.target.value)}
               placeholder="Enter your email"
               className="w-full border border-gray-300 rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-green-500"
             />
@@ -38,6 +86,8 @@ const SignupPage = () => {
             </label>
             <input
               type="password"
+              value={customerPassword}
+              onChange={(e) => setCustomerPassword(e.target.value)}
               placeholder="Enter your password"
               className="w-full border border-gray-300 rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-green-500"
             />
@@ -62,18 +112,18 @@ const SignupPage = () => {
           <button
             type="submit"
             className="w-full bg-green-700 text-white py-2 rounded-md font-medium hover:bg-green-800 focus:outline-none focus:ring-2 focus:ring-green-500"
+            disabled={isLoading}
           >
-            Signup
+            {isLoading ? "Signing Up..." : "Sign Up"}
           </button>
         </form>
 
-        
         {/* Sign In Link */}
         <p className="mt-4 text-center text-sm text-gray-500">
           Have an account?{" "}
-          <a href="#" className="text-blue-600 hover:underline">
+          <Link to="/login" className="text-blue-600 hover:underline">
             Login
-          </a>
+          </Link>
         </p>
       </div>
     </div>

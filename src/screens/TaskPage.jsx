@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import db from "../services/firebaseConfig";
-import AddTask from "../components/AddTask";
 import {
   collection,
   addDoc,
@@ -12,6 +11,7 @@ import {
   orderBy,
   serverTimestamp,
 } from "firebase/firestore";
+import { Link } from "react-router-dom";
 
 const TaskPage = () => {
   // State for controlling the visibility of the sidebar
@@ -163,12 +163,8 @@ const TaskPage = () => {
     return () => unsubscribe();
   }, []);
 
-  if(isLoading){
-    return (
-      <div>
-        Loading...
-      </div>
-    )
+  if (isLoading) {
+    return <div>Loading...</div>;
   }
   return (
     <div className="min-h-screen flex bg-gray-100 text-gray-800">
@@ -189,7 +185,7 @@ const TaskPage = () => {
         </h1>
         <nav className="space-y-4">
           <a
-            href="#"
+            href="/"
             className="flex items-center text-lg font-medium space-x-3"
           >
             <span className="material-icons">dashboard</span>{" "}
@@ -228,6 +224,18 @@ const TaskPage = () => {
             <span className="material-icons">settings</span>{" "}
             <span>Settings</span>
           </a>
+          <Link
+            to="/signup"
+            className="flex items-center text-lg font-medium space-x-3"
+          >
+            Signup
+          </Link>
+          <Link
+            to="/login"
+            className="flex items-center text-lg font-medium space-x-3"
+          >
+            Login
+          </Link>
         </nav>
       </aside>
       {/* Overlay for Sidebar */}
@@ -249,24 +257,19 @@ const TaskPage = () => {
               ☰
             </button>
             <span>Today</span>
-            {/* Search Bar */}
-            <div className="flex justify-between items-center mb-6">
-              <input
-                type="text"
-                placeholder="Search tasks..."
-                value={searchTerm}
-                onChange={handleSearchChange}
-                className="border rounded-md text-white px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-              />
-            </div>
           </h2>
-          <button className="bg-yellow-400 text-white px-4 py-2 rounded-lg shadow-md flex items-center space-x-2">
-            <span className="material-icons">play_arrow</span>{" "}
-            <span>Start Time Tracker</span>
-          </button>
-        </div>
 
-        {/* Members and ToDo */}
+          {/* Search Bar */}
+          <div className="flex justify-between items-center mb-6">
+            <input
+              type="text"
+              placeholder="Search tasks..."
+              value={searchTerm}
+              onChange={handleSearchChange}
+              className="border rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            />
+          </div>
+        </div>
 
         {/* To Do */}
         <div>
@@ -361,89 +364,50 @@ const TaskPage = () => {
         </div>
       </main>
       {/* Show Model */}
-      {showModal &&
-        (dataIdToBeUpdated ? (
-          <div
-            className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
-            role="dialog"
-            aria-modal="true"
-            aria-labelledby="modal-title"
-          >
-            <div className="bg-white p-6 rounded-lg shadow-lg max-w-sm w-full relative">
-              <form onSubmit={handleUpdateTask}>
-                <h2
-                  id="modal-title"
-                  className="text-xl font-semibold mb-4 text-center"
-                >
-                  Update Task
-                </h2>
-                <input
-                  type="text"
-                  placeholder="Enter your task"
-                  value={updatedTask}
-                  onChange={(e) => setUpdatedTask(e.target.value)}
-                  className="w-full text-white border border-gray-300 rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 mb-4"
-                />
-                {isLoading && (
-                  <div className="h-screen w-screen absolute top-0 left-0 z-50">
-                    Loading...
-                  </div>
-                )}
-                <div className="flex justify-end space-x-4">
-                  <button
-                    onClick={() => setShowModal(false)}
-                    className="px-4 py-2 bg-gray-300 rounded-md hover:bg-gray-400"
-                  >
-                    Cancel
-                  </button>
-                  <button
-                    type="submit"
-                    className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
-                  >
-                    Submit
-                  </button>
-                </div>
-              </form>
-            </div>
-          </div>
-        ) : (
-          <div
-            className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
-            role="dialog"
-            aria-modal="true"
-            aria-labelledby="modal-title"
-          >
-            <div className="bg-white p-6 rounded-lg shadow-lg max-w-sm w-full relative">
-              <h2
-                id="modal-title"
-                className="text-xl font-semibold mb-4 text-center"
+      {showModal && (
+        <div
+          className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="modal-title"
+        >
+          <div className="bg-white p-6 rounded-lg shadow-lg max-w-sm w-full relative">
+            <h2
+              id="modal-title"
+              className="text-xl font-semibold mb-4 text-center"
+            >
+              {dataIdToBeUpdated ? "Update Task" : "Add Task"}
+            </h2>
+            <input
+              type="text"
+              placeholder="Enter your task"
+              value={dataIdToBeUpdated ? updatedTask : task}
+              onChange={(e) => {
+                dataIdToBeUpdated
+                  ? setUpdatedTask(e.target.value)
+                  : setTask(e.target.value);
+              }}
+              className="w-full text-white border border-gray-300 rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 mb-4"
+            />
+            <div className="flex justify-end space-x-4">
+              <button
+                onClick={() => setShowModal(false)}
+                className="px-4 py-2 bg-gray-300 rounded-md hover:bg-gray-400"
               >
-                Add Task
-              </h2>
-              <input
-                type="text"
-                placeholder="Enter your task"
-                value={task}
-                onChange={(e) => setTask(e.target.value)}
-                className="w-full text-white border border-gray-300 rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 mb-4"
-              />
-              <div className="flex justify-end space-x-4">
-                <button
-                  onClick={() => setShowModal(false)}
-                  className="px-4 py-2 bg-gray-300 rounded-md hover:bg-gray-400"
-                >
-                  Cancel
-                </button>
-                <button
-                  onClick={handleTaskSubmit}
-                  className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
-                >
-                  Submit
-                </button>
-              </div>
+                Cancel
+              </button>
+              <button
+                onClick={
+                  dataIdToBeUpdated ? handleUpdateTask : handleTaskSubmit
+                }
+                className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
+              >
+                {dataIdToBeUpdated ? "Update" : "Add"}
+              </button>
             </div>
           </div>
-        ))}
+        </div>
+      )}
     </div>
   );
 };
