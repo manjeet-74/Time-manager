@@ -1,7 +1,7 @@
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom"; // Import necessary routing components
 import TaskPage from "./screens/TaskPage.jsx";
 import LoginPage from "./screens/LoginPage.jsx";
-import SignupPage from "./screens/SignUpPage";
+const SignupPage = React.lazy(() => import("./screens/SignupPage"));
 import "./App.css";
 
 function App() {
