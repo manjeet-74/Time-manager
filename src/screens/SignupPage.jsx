@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { auth, db } from "../services/firebaseConfig";
 import { addDoc, collection } from "firebase/firestore";
 import { createUserWithEmailAndPassword } from "firebase/auth";
@@ -8,14 +8,21 @@ const SignupPage = () => {
   const [customerName, setCustomerName] = useState("");
   const [customerEmail, setCustomerEmail] = useState("");
   const [customerPassword, setCustomerPassword] = useState("");
+  const [isTermsAccepted, setIsTermsAccepted] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const navigate = useNavigate();
 
   const registerUser = async (e) => {
     e.preventDefault();
     if (!customerName || !customerPassword || !customerEmail) {
-      alert("All the fields are required!");
+      alert("All fields are required!");
       return;
     }
+    if (!isTermsAccepted) {
+      alert("You must agree to the terms and policy!");
+      return;
+    }
+
     setIsLoading(true);
 
     try {
@@ -24,7 +31,6 @@ const SignupPage = () => {
         customerEmail,
         customerPassword
       );
-
       const user = userCredentials.user;
 
       // Add the customer data to Firestore
@@ -34,14 +40,16 @@ const SignupPage = () => {
         email: customerEmail,
         uid: user.uid,
       });
-      // Clear the form after successful submission
+
+      // Clear the form and redirect after successful submission
       setCustomerName("");
       setCustomerPassword("");
       setCustomerEmail("");
       alert("Account created successfully!");
+      navigate("/");
     } catch (error) {
       console.error("Error adding customer data: ", error);
-      alert("Error saving data. Please try again.");
+      alert(`Error: ${error.message}`);
     } finally {
       setIsLoading(false);
     }
@@ -96,19 +104,18 @@ const SignupPage = () => {
           </div>
 
           {/* Terms and Conditions */}
-          {/* <div className="flex items-start">
+          <div className="flex items-start">
             <input
               type="checkbox"
               id="terms"
               className="w-4 h-4 text-green-600 border-gray-300 rounded focus:ring-green-500"
+              checked={isTermsAccepted}
+              onChange={() => setIsTermsAccepted(!isTermsAccepted)}
             />
-            <label
-              htmlFor="terms"
-              className="ml-2 block text-sm text-gray-700"
-            >
+            <label htmlFor="terms" className="ml-2 block text-sm text-gray-700">
               I agree to the terms & policy
             </label>
-          </div> */}
+          </div>
 
           {/* Submit Button */}
           <button

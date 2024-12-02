@@ -370,7 +370,7 @@ const TaskPage = () => {
                   ? setUpdatedTask(e.target.value)
                   : setTask(e.target.value);
               }}
-              className="w-full text-white border border-gray-300 rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 mb-4"
+              className="w-full border border-gray-300 rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 mb-4"
             />
             <div className="flex justify-end space-x-4">
               <button
