@@ -3,6 +3,7 @@ import TaskPage from "./screens/TaskPage.jsx";
 import LoginPage from "./screens/LoginPage.jsx";
 const SignupPage = React.lazy(() => import("./screens/SignupPage"));
 import "./App.css";
+import React from "react";
 
 function App() {
   return (
