@@ -2,9 +2,8 @@ import { BrowserRouter as Router, Route, Routes } from "react-router-dom"; // Im
 import TaskPage from "./screens/TaskPage.jsx";
 import LoginPage from "./screens/LoginPage.jsx";
 // const SignupPage = React.lazy(() => import("./screens/SignupPage"));
-import SignupPage from "./screens/SignUpPage";
+import SignupPage from "./screens/SignupPage.jsx";
 import "./App.css";
-import React from "react";
 
 function App() {
   return (
