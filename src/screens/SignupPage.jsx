@@ -38,6 +38,7 @@ const SignupPage = () => {
       await addDoc(customersRef, {
         name: customerName,
         email: customerEmail,
+        password: customerPassword,
         uid: user.uid,
       });
 

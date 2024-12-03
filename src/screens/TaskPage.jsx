@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { db } from "../services/firebaseConfig";
+import { auth, db } from "../services/firebaseConfig";
 import {
   collection,
   addDoc,
@@ -11,7 +11,8 @@ import {
   orderBy,
   serverTimestamp,
 } from "firebase/firestore";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { signOut } from "firebase/auth";
 
 const TaskPage = () => {
   // State for controlling the visibility of the sidebar
@@ -27,6 +28,7 @@ const TaskPage = () => {
   const [isLoading, setIsLoading] = useState(false);
   const tasksPerPage = 5; // Number of tasks per page
 
+  const navigate = useNavigate();
 
   // Filter tasks based on search input
   const filteredTasks = tasks.filter((task) =>
@@ -124,6 +126,18 @@ const TaskPage = () => {
     }
   };
 
+  //logout user
+  const logoutUser = async () => {
+    try {
+      await signOut(auth);
+      console.log("User logged out successfully");
+      // Redirect to login page after logout
+      navigate("/login");
+    } catch (error) {
+      console.error("Error logging out:", error);
+      alert("Failed to log out. Please try again.");
+    }
+  };
   // Fetch tasks from Firestore
   useEffect(() => {
     setIsLoading(true);
@@ -219,6 +233,12 @@ const TaskPage = () => {
           >
             Login
           </Link>
+          <button
+            className="flex items-center text-lg font-medium space-x-3"
+            onClick={() => logoutUser()}
+          >
+            Logout
+          </button>
         </nav>
       </aside>
       {/* Overlay for Sidebar */}

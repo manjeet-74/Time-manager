@@ -1,9 +1,12 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { getAuth, validatePassword } from "firebase/auth";
 
 const LoginPage = () => {
   const [customerName, setCustomerName] = useState("");
   const [customerPassword, setCustomerPassword] = useState("");
+
+  const navigate = useNavigate();
 
   const submit = async (e) => {
     e.preventDefault();
@@ -14,11 +17,16 @@ const LoginPage = () => {
       }
 
       // You would likely add logic to check if the user exists in the database here.
-
+      const status = await validatePassword(getAuth(), customerPassword);
+      if (!status.isValid) {
+        alert("Incorrect credentials!");
+        return;
+      }
       // Clear the form after successful submission
       setCustomerName("");
       setCustomerPassword("");
-      alert("Customer data added successfully!");
+      navigate("/");
+      alert("Login successful!!");
     } catch (error) {
       console.error("Error processing data: ", error);
       alert("Error saving data. Please try again.");
